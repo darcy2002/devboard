@@ -4,6 +4,59 @@ A lightweight task management web application built with **Micro Frontend (MFE) 
 
 ---
 
+## Live Demo
+
+Try the app online — all services are deployed and connected:
+
+| Service        | URL |
+| -------------- | --- |
+| **Shell (main app)** | [https://devboard-main.vercel.app/](https://devboard-main.vercel.app/) |
+| **MFE Tasks**  | [https://mfe-tasks.vercel.app/](https://mfe-tasks.vercel.app/) |
+| **MFE Dashboard** | [https://devboard-blue.vercel.app/](https://devboard-blue.vercel.app/) |
+| **Backend API** | [https://devboard-production-0b7c.up.railway.app/api](https://devboard-production-0b7c.up.railway.app/api) |
+
+Open the **Shell** link to use the full app (Dashboard + Tasks). The API link is the backend base URL for health checks and task endpoints.
+
+---
+
+## Run quickly locally
+
+**Prerequisites:** Node.js 18+, MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/atlas) free tier).
+
+```bash
+# 1. Clone and install
+git clone https://github.com/<your-username>/devboard-assignement.git
+cd devboard-assignement
+npm run install:all
+
+# 2. Environment — copy examples and set MongoDB URI
+cp backend-api/.env.example backend-api/.env
+cp mfe-tasks/.env.example mfe-tasks/.env
+cp mfe-dashboard/.env.example mfe-dashboard/.env
+cp shell-app/.env.example shell-app/.env
+# Edit backend-api/.env and set MONGODB_URI
+
+# 3. Seed sample data
+npm run seed
+
+# 4. Start backend (Terminal 1)
+npm run dev:backend
+
+# 5. Build and serve MFEs (Terminal 2) — Module Federation needs built assets
+cd shared-ui && npm run build && npm run preview &
+cd mfe-tasks && npm run build && npm run preview &
+cd mfe-dashboard && npm run build && npm run preview &
+
+# 6. Start shell (Terminal 3)
+cd shell-app && npm run dev
+
+# 7. Open http://localhost:5173 (or the port Vite prints)
+```
+
+MFEs run in **preview** mode (build + serve) because Module Federation requires built output. The shell runs in dev mode and will load the remotes from the preview ports.
+
+---
+
 ## Architecture
 
 ```
@@ -53,22 +106,11 @@ Each MFE is independently built and deployed. The shell-app loads MFEs at runtim
 | Database    | MongoDB Atlas (Free M0 Cluster)                                   |
 | Testing     | Vitest, @testing-library/react, @testing-library/jest-dom         |
 | CI          | GitHub Actions                                                    |
-| Deployment  | Vercel (frontends), Render (backend)                              |
+| Deployment  | Vercel (frontends), Railway (backend)                             |
 
 ---
 
-## Live Demo
-
-| Service        | URL                                         |
-| -------------- | ------------------------------------------- |
-| Shell App      | `https://devboard-shell.vercel.app`         |
-| MFE Tasks      | `https://devboard-mfe-tasks.vercel.app`     |
-| MFE Dashboard  | `https://devboard-mfe-dashboard.vercel.app` |
-| Backend API    | `https://devboard-api.onrender.com`         |
-
----
-
-## Local Setup
+## Local Setup (detailed)
 
 ### Prerequisites
 
