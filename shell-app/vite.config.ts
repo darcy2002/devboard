@@ -3,8 +3,9 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import federation from '@originjs/vite-plugin-federation';
 
-const mfeTasksUrl = process.env.VITE_MFE_TASKS_URL || 'http://localhost:5001';
-const mfeDashboardUrl = process.env.VITE_MFE_DASHBOARD_URL || 'http://localhost:5002';
+// Strip trailing slashes so we never get double slashes in asset URLs
+const mfeTasksUrl = (process.env.VITE_MFE_TASKS_URL || 'http://localhost:5001').replace(/\/+$/, '');
+const mfeDashboardUrl = (process.env.VITE_MFE_DASHBOARD_URL || 'http://localhost:5002').replace(/\/+$/, '');
 
 export default defineConfig({
   plugins: [
