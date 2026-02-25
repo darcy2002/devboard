@@ -39,21 +39,14 @@ cp shell-app/.env.example shell-app/.env
 # 3. Seed sample data
 npm run seed
 
-# 4. Start backend (Terminal 1)
-npm run dev:backend
+# 4. Build MFEs once (Module Federation needs built assets)
+npm run build:shared && npm run build:tasks && npm run build:dashboard
 
-# 5. Build and serve MFEs (Terminal 2) — Module Federation needs built assets
-cd shared-ui && npm run build && npm run preview &
-cd mfe-tasks && npm run build && npm run preview &
-cd mfe-dashboard && npm run build && npm run preview &
-
-# 6. Start shell (Terminal 3)
-cd shell-app && npm run dev
-
-# 7. Open http://localhost:5173 (or the port Vite prints)
+# 5. Start everything (backend + MFE preview servers + shell)
+npm run dev
 ```
 
-MFEs run in **preview** mode (build + serve) because Module Federation requires built output. The shell runs in dev mode and will load the remotes from the preview ports.
+Then open the URL Vite prints (e.g. **http://localhost:5173**). The root `npm run dev` starts the backend, serves the MFEs in preview mode, and runs the shell in dev mode.
 
 ---
 
