@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: backend-api
+      - run: npm run build
+        working-directory: backend-api
+
+  build-mfe-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: mfe-tasks
+      - run: npm run build
+        working-directory: mfe-tasks
+      - run: npx vitest run
+        working-directory: mfe-tasks
+
+  build-mfe-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: mfe-dashboard
+      - run: npm run build
+        working-directory: mfe-dashboard
+      - run: npx vitest run
+        working-directory: mfe-dashboard
+
+  build-shell:
+    runs-on: ubuntu-latest
+    needs: [build-mfe-tasks, build-mfe-dashboard]
+    env:
+      VITE_MFE_TASKS_URL: https://mfe-tasks.vercel.app
+      VITE_MFE_DASHBOARD_URL: https://mfe-dashboard.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: shell-app
+      - run: npm run build
+        working-directory: shell-app

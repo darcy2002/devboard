@@ -1,0 +1,32 @@
+{
+  "name": "devboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DevBoard — Micro Frontend Task Management App",
+  "scripts": {
+    "install:all": "npm install --prefix backend-api && npm install --prefix shared-ui && npm install --prefix mfe-tasks && npm install --prefix mfe-dashboard && npm install --prefix shell-app",
+    "dev:backend": "npm run dev --prefix backend-api",
+    "dev:shared": "npm run preview --prefix shared-ui",
+    "dev:tasks": "npm run preview --prefix mfe-tasks",
+    "dev:dashboard": "npm run preview --prefix mfe-dashboard",
+    "dev:shell": "npm run dev --prefix shell-app",
+    "build:shared": "npm run build --prefix shared-ui",
+    "build:tasks": "npm run build --prefix mfe-tasks",
+    "build:dashboard": "npm run build --prefix mfe-dashboard",
+    "build:shell": "npm run build --prefix shell-app",
+    "build:all": "npm run build:shared && npm run build:tasks && npm run build:dashboard && npm run build:shell",
+    "preview:shared": "npm run preview --prefix shared-ui",
+    "preview:tasks": "npm run preview --prefix mfe-tasks",
+    "preview:dashboard": "npm run preview --prefix mfe-dashboard",
+    "preview:shell": "npm run preview --prefix shell-app",
+    "preview:mfes": "concurrently \"npm run preview:shared\" \"npm run preview:tasks\" \"npm run preview:dashboard\"",
+    "preview:all": "concurrently \"npm run preview:shared\" \"npm run preview:tasks\" \"npm run preview:dashboard\" \"npm run preview:shell\"",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:shared\" \"npm run dev:tasks\" \"npm run dev:dashboard\" \"npm run dev:shell\"",
+    "seed": "npm run seed --prefix backend-api",
+    "test": "npm run test --prefix mfe-tasks && npm run test --prefix mfe-dashboard",
+    "lint": "npm run lint --prefix backend-api && npm run lint --prefix mfe-tasks && npm run lint --prefix mfe-dashboard && npm run lint --prefix shell-app"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
