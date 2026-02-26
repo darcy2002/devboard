@@ -1,14 +1,16 @@
+import Card from 'sharedUi/Card';
+
 const SkeletonStatCard = () => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse">
+    <Card padding="md" className="p-5 overflow-hidden">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-gray-200 rounded-lg" />
+        <div className="w-12 h-12 skeleton-shimmer rounded-lg" />
         <div className="flex-1">
-          <div className="h-4 bg-gray-200 rounded w-20 mb-2" />
-          <div className="h-7 bg-gray-200 rounded w-12" />
+          <div className="h-4 skeleton-shimmer rounded w-20 mb-2" />
+          <div className="h-7 skeleton-shimmer rounded w-12" />
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

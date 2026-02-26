@@ -1,3 +1,5 @@
+import Card from 'sharedUi/Card';
+
 interface StatCardProps {
   icon: React.ReactNode;
   title: string;
@@ -8,7 +10,7 @@ interface StatCardProps {
 
 const StatCard = ({ icon, title, value, subtitle, colorClass }: StatCardProps) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+    <Card padding="md" className="p-5">
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${colorClass}`}>
           {icon}
@@ -19,7 +21,7 @@ const StatCard = ({ icon, title, value, subtitle, colorClass }: StatCardProps) =
           {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

@@ -15,6 +15,7 @@
     "build:dashboard": "npm run build --prefix mfe-dashboard",
     "build:shell": "npm run build --prefix shell-app",
     "build:all": "npm run build:shared && npm run build:tasks && npm run build:dashboard && npm run build:shell",
+    "build:mfes": "npm run build:shared && npm run build:tasks && npm run build:dashboard",
     "preview:shared": "npm run preview --prefix shared-ui",
     "preview:tasks": "npm run preview --prefix mfe-tasks",
     "preview:dashboard": "npm run preview --prefix mfe-dashboard",

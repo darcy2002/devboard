@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Button from 'sharedUi/Button';
+import EmptyState from 'sharedUi/EmptyState';
 import { useStats } from './hooks/useStats';
 import StatsGrid from './components/StatsGrid';
 import TaskChart from './components/TaskChart';
@@ -26,11 +28,11 @@ const DashboardContent = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+      <div className="p-6 sm:p-8 bg-white h-full">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-sm text-gray-500 mt-1">Overview of your tasks</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+            <p className="text-sm text-gray-400 mt-1">Overview of your tasks</p>
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -44,32 +46,29 @@ const DashboardContent = () => {
 
   if (isError) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01" />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">Failed to load stats</h3>
-          <button
-            onClick={() => refetch()}
-            className="mt-4 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
-          >
-            Retry
-          </button>
-        </div>
+      <div className="p-6 sm:p-8 bg-white h-full">
+        <EmptyState
+          icon={
+            <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center">
+              <svg className="w-8 h-8 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          }
+          title="Failed to load stats"
+          action={<Button onClick={() => refetch()}>Retry</Button>}
+        />
       </div>
     );
   }
 
   if (!stats || stats.total === 0) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+      <div className="p-6 sm:p-8 bg-white h-full">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-sm text-gray-500 mt-1">Overview of your tasks</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+            <p className="text-sm text-gray-400 mt-1">Overview of your tasks</p>
           </div>
           <RefreshButton onRefresh={() => refetch()} isRefreshing={isRefetching} />
         </div>
@@ -79,16 +78,16 @@ const DashboardContent = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div className="p-6 sm:p-8 bg-white h-full overflow-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Overview of your tasks and stats</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-gray-400 mt-1">Overview of your tasks and stats</p>
         </div>
         <RefreshButton onRefresh={() => refetch()} isRefreshing={isRefetching} />
       </div>
 
-      <div className="mb-6">
+      <div className="mb-8">
         <StatsGrid stats={stats} />
       </div>
 

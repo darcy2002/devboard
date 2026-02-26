@@ -46,7 +46,9 @@ npm run build:shared && npm run build:tasks && npm run build:dashboard
 npm run dev
 ```
 
-Then open the URL Vite prints (e.g. **http://localhost:5173**). The root `npm run dev` starts the backend, serves the MFEs in preview mode, and runs the shell in dev mode.
+Then open the **shell** URL that Vite prints (e.g. **http://localhost:5173**). Use this URL to see the full app with the left menu bar (Dashboard / Tasks). Do not open the MFE URLs (e.g. 5001, 5002) directly—those run without the shell and will not show the sidebar.
+
+**Shell UI changes not showing?** The shell runs in **dev mode** on **port 5173** when you use `npm run dev`. Open **http://localhost:5173** (not 5000). If you use `npm run preview:shell` or open port 5000, you are viewing a **built** bundle—run `npm run build:shell` and refresh to see latest shell changes. In dev, the sidebar footer shows "● Live dev" when you're on the latest dev server.
 
 ---
 
@@ -57,6 +59,7 @@ Pushes to `main` or `master` trigger **only** the deployment for the code that c
 | Changes in          | Workflow                    | Deploys to   |
 | ------------------- | --------------------------- | ------------ |
 | `backend-api/**`    | `deploy-backend.yml`        | Railway      |
+| `shared-ui/**`      | (add `deploy-vercel-shared-ui.yml` or deploy manually) | Vercel (shared-ui) |
 | `shell-app/**`      | `deploy-vercel-shell.yml`   | Vercel (shell) |
 | `mfe-tasks/**`      | `deploy-vercel-mfe-tasks.yml` | Vercel (mfe-tasks) |
 | `mfe-dashboard/**`  | `deploy-vercel-mfe-dashboard.yml` | Vercel (mfe-dashboard) |
@@ -70,7 +73,9 @@ Pushes to `main` or `master` trigger **only** the deployment for the code that c
 
    To avoid double deploys, in each Vercel project you can turn off “Deploy on push” and rely only on these hooks, or keep it and use the hooks for path-only triggers (workflows only run when their path changes).
 
-2. **Railway** — In the repo add **Actions** secrets:
+2. **Deploy shared-ui separately** — mfe-tasks and mfe-dashboard load shared-ui (Button, Card, Modal, Badge, etc.) from a remote at runtime. Deploy **shared-ui** as its own app (e.g. Vercel with Root Directory `shared-ui`). When building mfe-tasks and mfe-dashboard for production, set **`VITE_SHARED_UI_URL`** to that deployed URL (e.g. `https://your-shared-ui.vercel.app`). Default if unset: `http://localhost:5003` (local only).
+
+3. **Railway** — In the repo add **Actions** secrets:
    - `RAILWAY_TOKEN`: Railway project token (**Project → Settings → Tokens**).
    - `RAILWAY_SERVICE_ID`: **Required** when the project has multiple services. Get it in Railway: backend service → Settings → Service ID (or from the service URL). Add as repo secret. Previously: (optional) Service ID from the backend service’s URL or settings. If the project has one service, the CLI may detect it without this.
 
@@ -194,8 +199,12 @@ cd shell-app && npm run dev
 | `CORS_ORIGIN`          | backend-api    | Comma-separated allowed origins          | `http://localhost:5000,http://localhost:5001` |
 | `VITE_API_URL`         | mfe-tasks      | Backend API base URL                     | `http://localhost:5050/api`                |
 | `VITE_API_URL`         | mfe-dashboard  | Backend API base URL                     | `http://localhost:5050/api`                |
+| `VITE_SHARED_UI_URL`   | mfe-tasks      | Shared UI remote URL (for Module Federation) | `http://localhost:5003` (default)      |
+| `VITE_SHARED_UI_URL`   | mfe-dashboard  | Shared UI remote URL (for Module Federation) | `http://localhost:5003` (default)      |
 | `VITE_MFE_TASKS_URL`   | shell-app      | MFE Tasks deployment URL                 | `http://localhost:5001`                    |
 | `VITE_MFE_DASHBOARD_URL` | shell-app   | MFE Dashboard deployment URL             | `http://localhost:5002`                    |
+
+For **production** builds of mfe-tasks and mfe-dashboard, set `VITE_SHARED_UI_URL` to your deployed shared-ui URL (e.g. in Vercel: Project → Settings → Environment Variables).
 
 ---
 

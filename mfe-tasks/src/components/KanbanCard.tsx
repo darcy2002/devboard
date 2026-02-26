@@ -1,5 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import Badge from 'sharedUi/Badge';
 import { Task } from '../types';
 import { KANBAN_COLUMNS } from '../types';
 
@@ -8,10 +9,16 @@ interface KanbanCardProps {
   onOpenDetail: (task: Task) => void;
 }
 
-const priorityColors: Record<string, string> = {
-  low: 'bg-sky-100 text-sky-700',
-  medium: 'bg-amber-100 text-amber-700',
-  high: 'bg-rose-100 text-rose-700',
+const statusBadgeVariant: Record<string, 'success' | 'info' | 'warning'> = {
+  completed: 'success',
+  in_progress: 'info',
+  pending: 'warning',
+};
+
+const priorityBadgeVariant: Record<string, 'info' | 'warning' | 'danger'> = {
+  low: 'info',
+  medium: 'warning',
+  high: 'danger',
 };
 
 export default function KanbanCard({ task, onOpenDetail }: KanbanCardProps) {
@@ -22,7 +29,7 @@ export default function KanbanCard({ task, onOpenDetail }: KanbanCardProps) {
   });
 
   const style = transform
-    ? { transform: CSS.Translate.toString(transform), transition: 'transform 200ms ease' }
+    ? { transform: CSS.Translate.toString(transform), transition: 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)' }
     : undefined;
 
   const formattedDate = new Date(task.dueDate).toLocaleDateString('en-US', {
@@ -40,46 +47,42 @@ export default function KanbanCard({ task, onOpenDetail }: KanbanCardProps) {
       {...attributes}
       onClick={() => onOpenDetail(task)}
       className={`
-        group rounded-xl border border-gray-200 bg-white p-4 shadow-sm
+        group rounded-xl bg-white p-4 shadow-sm border border-gray-100
         transition-all duration-200 ease-out
-        hover:shadow-md hover:border-gray-300
+        hover:shadow-md hover:-translate-y-0.5 hover:border-gray-200
+        active:scale-[0.98] active:translate-y-0 active:shadow-sm
         cursor-grab active:cursor-grabbing
-        ${isDragging ? 'opacity-90 shadow-lg ring-2 ring-indigo-200 scale-[1.02]' : ''}
+        ${isDragging ? 'opacity-80 shadow-xl ring-2 ring-indigo-300 scale-[1.03] z-50 rotate-1' : ''}
       `}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-            column?.id === 'completed'
-              ? 'bg-emerald-100 text-emerald-700'
-              : column?.id === 'in_progress'
-              ? 'bg-blue-100 text-blue-700'
-              : 'bg-amber-100 text-amber-700'
-          }`}
-        >
+      {/* Status + date row */}
+      <div className="flex items-center justify-between gap-2 mb-2.5">
+        <Badge variant={statusBadgeVariant[task.status] ?? 'default'}>
           {column?.title ?? task.status}
-        </span>
-        <span
-          className={`shrink-0 text-xs ${isOverdue ? 'text-rose-600 font-medium' : 'text-gray-400'}`}
-        >
+        </Badge>
+        <span className={`shrink-0 text-[11px] ${isOverdue ? 'text-rose-500 font-semibold' : 'text-gray-400'}`}>
           {isOverdue && '⚠ '}
           {formattedDate}
         </span>
       </div>
-      <h3
-        className={`font-semibold text-gray-900 mb-1 line-clamp-2 ${
-          task.status === 'completed' ? 'line-through text-gray-500' : ''
-        }`}
-      >
+
+      {/* Title */}
+      <h3 className={`font-semibold text-gray-900 text-sm leading-snug mb-1.5 line-clamp-2 group-hover:text-indigo-700 transition-colors duration-200 ${
+        task.status === 'completed' ? 'line-through !text-gray-400' : ''
+      }`}>
         {task.title}
       </h3>
+
+      {/* Description */}
       {task.description && (
-        <p className="text-sm text-gray-500 line-clamp-2 mb-3">{task.description}</p>
+        <p className="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">{task.description}</p>
       )}
-      <div className="flex items-center justify-between">
-        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${priorityColors[task.priority]}`}>
+
+      {/* Priority */}
+      <div className="flex items-center justify-between pt-1">
+        <Badge variant={priorityBadgeVariant[task.priority] ?? 'default'}>
           {task.priority}
-        </span>
+        </Badge>
       </div>
     </div>
   );

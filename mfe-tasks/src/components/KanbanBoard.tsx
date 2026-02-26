@@ -8,6 +8,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
+import Button from 'sharedUi/Button';
 import { useFetchTasks, useSetStatus } from '../hooks/useTasks';
 import { Task } from '../types';
 import { KANBAN_COLUMNS } from '../types';
@@ -54,10 +55,14 @@ export default function KanbanBoard() {
 
   if (isLoading) {
     return (
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-4 overflow-x-auto pb-4 min-h-0 flex-1 pt-2">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex-shrink-0 w-[320px] space-y-3">
-            <div className="h-10 bg-gray-200 rounded animate-pulse mb-4" />
+          <div key={i} className="flex-shrink-0 w-[300px] sm:w-[320px] space-y-2.5 rounded-2xl p-3 bg-gray-50/70">
+            <div className="flex items-center gap-2 px-1 mb-3">
+              <div className="w-2.5 h-2.5 skeleton-shimmer rounded-full" />
+              <div className="h-4 skeleton-shimmer rounded w-20" />
+              <div className="ml-auto w-6 h-6 skeleton-shimmer rounded-lg" />
+            </div>
             {[1, 2, 3].map((j) => (
               <SkeletonCard key={j} />
             ))}
@@ -69,14 +74,16 @@ export default function KanbanBoard() {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <p className="text-gray-600 mb-4">{(error as Error)?.message}</p>
-        <button
-          onClick={() => refetch()}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-        >
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p className="text-gray-500 mb-4 text-sm">{(error as Error)?.message}</p>
+        <Button variant="primary" onClick={() => refetch()}>
           Retry
-        </button>
+        </Button>
       </div>
     );
   }
@@ -84,7 +91,7 @@ export default function KanbanBoard() {
   return (
     <>
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 overflow-x-auto pb-4 min-h-[500px]">
+        <div className="flex gap-4 overflow-x-auto pb-4 min-h-0 flex-1 pt-2">
           {KANBAN_COLUMNS.map((col) => (
             <KanbanColumn
               key={col.id}
@@ -95,9 +102,9 @@ export default function KanbanBoard() {
           ))}
         </div>
 
-        <DragOverlay>
+        <DragOverlay dropAnimation={null}>
           {activeTask ? (
-            <div className="rotate-2 scale-105">
+            <div className="rotate-2 scale-105 opacity-90 transition-transform duration-200 ease-out">
               <KanbanCard task={activeTask} onOpenDetail={() => {}} />
             </div>
           ) : null}

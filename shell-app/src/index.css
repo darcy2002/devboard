@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+* { scroll-behavior: smooth; }
+
+/* Shell layout: sidebar visibility (MFE-safe, not overridable by MFE Tailwind) */
+.shell-desktop-sidebar {
+  display: none;
+  flex-direction: column;
+}
+@media (min-width: 640px) {
+  .shell-desktop-sidebar { display: flex !important; }
+}
+.shell-mobile-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 640px) {
+  .shell-mobile-sidebar { display: none !important; }
+}
+
+/* Hide logo area in mobile sidebar (it shows in navbar instead) */
+.shell-hide-on-mobile {}
+@media (max-width: 639px) {
+  .shell-mobile-sidebar .shell-hide-on-mobile { display: none !important; }
+}
+
+/* Nav link transitions */
+.shell-nav-link {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shell-nav-link:hover {
+  transform: translateX(2px);
+}
+.shell-nav-link:active {
+  transform: translateX(0) scale(0.97);
+}
+.shell-nav-link.active {
+  transform: none;
+}
+.shell-btn-tap:active {
+  transform: scale(0.95);
+}

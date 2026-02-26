@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-panel-in {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-modal-backdrop {
+  animation: modal-backdrop-in 0.2s ease-out;
+}
+.animate-modal-panel {
+  animation: modal-panel-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgb(229 231 235) 25%, rgb(243 244 246) 50%, rgb(229 231 235) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}

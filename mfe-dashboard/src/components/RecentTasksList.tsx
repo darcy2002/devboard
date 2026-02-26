@@ -27,11 +27,11 @@ export default function RecentTasksList({ onSelectTask }: RecentTasksListProps) 
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <h3 className="text-sm font-semibold text-gray-900 mb-4">Recent Tasks</h3>
         <div className="space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-14 bg-gray-100 rounded-lg animate-pulse" />
+            <div key={i} className="h-14 skeleton-shimmer rounded-lg" />
           ))}
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function RecentTasksList({ onSelectTask }: RecentTasksListProps) 
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-200">
       <h3 className="text-sm font-semibold text-gray-900 mb-4">Recent Tasks</h3>
       <ul className="space-y-2">
         {data.map((task) => {
@@ -62,7 +62,7 @@ export default function RecentTasksList({ onSelectTask }: RecentTasksListProps) 
               <button
                 type="button"
                 onClick={() => onSelectTask(task)}
-                className="w-full text-left p-3 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all duration-200"
+                className="w-full text-left p-3 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50 active:scale-[0.99] transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-2">
                   <span className={`font-medium text-gray-900 truncate ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>

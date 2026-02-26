@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Button from 'sharedUi/Button';
+import Badge from 'sharedUi/Badge';
 import { useTask, useUpdateTask, useDeleteTask } from '../hooks/useTasks';
 import { Task } from '../types';
 import { KANBAN_COLUMNS } from '../types';
@@ -10,10 +12,16 @@ interface TaskDetailModalProps {
   onDeleted?: () => void;
 }
 
-const priorityColors: Record<string, string> = {
-  low: 'bg-sky-100 text-sky-700',
-  medium: 'bg-amber-100 text-amber-700',
-  high: 'bg-rose-100 text-rose-700',
+const statusBadgeVariant: Record<string, 'success' | 'info' | 'warning'> = {
+  completed: 'success',
+  in_progress: 'info',
+  pending: 'warning',
+};
+
+const priorityBadgeVariant: Record<string, 'info' | 'warning' | 'danger'> = {
+  low: 'info',
+  medium: 'warning',
+  high: 'danger',
 };
 
 export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDetailModalProps) {
@@ -58,8 +66,8 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
 
   if (isLoading || !task) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 p-8 animate-pulse" onClick={(e) => e.stopPropagation()}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-modal-backdrop" onClick={onClose}>
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-auto p-8 animate-modal-panel animate-pulse" onClick={(e) => e.stopPropagation()}>
           <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
           <div className="h-4 bg-gray-200 rounded w-full mb-2" />
           <div className="h-4 bg-gray-200 rounded w-1/2" />
@@ -79,11 +87,11 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-modal-backdrop"
         onClick={onClose}
       >
         <div
-          className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-modal-in"
+          className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-modal-panel"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-6 border-b border-gray-100 flex items-start justify-between">
@@ -161,8 +169,10 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
               <>
                 <div>
                   <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Status</span>
-                  <p className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-sm font-medium ${column?.id === 'completed' ? 'bg-emerald-100 text-emerald-700' : column?.id === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
-                    {column?.title ?? task.status}
+                  <p className="mt-1">
+                    <Badge variant={statusBadgeVariant[task.status] ?? 'default'} size="md">
+                      {column?.title ?? task.status}
+                    </Badge>
                   </p>
                 </div>
                 {task.description && (
@@ -171,10 +181,10 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
                     <p className="mt-1 text-gray-700">{task.description}</p>
                   </div>
                 )}
-                <div className="flex flex-wrap gap-2">
-                  <span className={`inline-flex px-2.5 py-1 rounded-full text-sm font-medium ${priorityColors[task.priority]}`}>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Badge variant={priorityBadgeVariant[task.priority] ?? 'default'} size="md">
                     {task.priority} priority
-                  </span>
+                  </Badge>
                   <span className={`text-sm ${isOverdue ? 'text-rose-600 font-medium' : 'text-gray-500'}`}>
                     Due {formattedDate}
                     {isOverdue && ' (Overdue)'}
@@ -187,31 +197,26 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
           <div className="p-6 border-t border-gray-100 flex flex-wrap gap-3">
             {editing ? (
               <>
-                <button
+                <Button
                   onClick={handleSave}
                   disabled={updateTask.isPending || !form.title}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                  isLoading={updateTask.isPending}
                 >
-                  {updateTask.isPending ? 'Saving…' : 'Save'}
-                </button>
-                <button onClick={() => setEditing(false)} className="px-4 py-2 text-gray-600 hover:text-gray-900">
+                  Save
+                </Button>
+                <Button variant="ghost" onClick={() => setEditing(false)}>
                   Cancel
-                </button>
+                </Button>
               </>
             ) : (
               <>
-                <button onClick={startEdit} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                  Edit
-                </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="px-4 py-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                >
+                <Button onClick={startEdit}>Edit</Button>
+                <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
                   Delete
-                </button>
-                <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:text-gray-900">
+                </Button>
+                <Button variant="ghost" onClick={onClose}>
                   Close
-                </button>
+                </Button>
               </>
             )}
           </div>
