@@ -1,0 +1,28 @@
+# Deploys backend-api to Railway only when backend-api/** changes.
+# Secrets: RAILWAY_TOKEN (Project → Settings → Tokens), RAILWAY_SERVICE_ID (from Railway service settings)
+
+name: Deploy Backend (Railway)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend-api/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Railway
+        working-directory: backend-api
+        run: |
+          if [ -n "$RAILWAY_SERVICE_ID" ]; then
+            railway up --detach --service "$RAILWAY_SERVICE_ID"
+          else
+            railway up --detach
+          fi

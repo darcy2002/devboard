@@ -1,0 +1,22 @@
+# Triggers Vercel deploy for mfe-tasks only when mfe-tasks/** changes.
+# Secret: VERCEL_DEPLOY_HOOK_MFE_TASKS (Vercel → Project → Settings → Git → Deploy Hooks)
+
+name: Deploy MFE Tasks (Vercel)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mfe-tasks/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK_MFE_TASKS }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK_MFE_TASKS not set — add it in repo secrets to enable deploys"
+            exit 0
+          fi
+          curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_MFE_TASKS }}"

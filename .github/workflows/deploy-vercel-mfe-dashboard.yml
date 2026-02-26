@@ -1,0 +1,22 @@
+# Triggers Vercel deploy for mfe-dashboard only when mfe-dashboard/** changes.
+# Secret: VERCEL_DEPLOY_HOOK_MFE_DASHBOARD (Vercel → Project → Settings → Git → Deploy Hooks)
+
+name: Deploy MFE Dashboard (Vercel)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mfe-dashboard/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK_MFE_DASHBOARD }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK_MFE_DASHBOARD not set — add it in repo secrets to enable deploys"
+            exit 0
+          fi
+          curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_MFE_DASHBOARD }}"

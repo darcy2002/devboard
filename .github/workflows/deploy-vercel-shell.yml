@@ -1,0 +1,22 @@
+# Triggers Vercel deploy for shell-app only when shell-app/** changes.
+# Secret: VERCEL_DEPLOY_HOOK_SHELL (Vercel → Project → Settings → Git → Deploy Hooks)
+
+name: Deploy Shell (Vercel)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'shell-app/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK_SHELL }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK_SHELL not set — add it in repo secrets to enable deploys"
+            exit 0
+          fi
+          curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_SHELL }}"

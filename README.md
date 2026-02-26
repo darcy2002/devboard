@@ -50,6 +50,34 @@ Then open the URL Vite prints (e.g. **http://localhost:5173**). The root `npm ru
 
 ---
 
+## Path-based deploys (GitHub Actions)
+
+Pushes to `main` trigger **only** the deployment for the code that changed:
+
+| Changes in          | Workflow                    | Deploys to   |
+| ------------------- | --------------------------- | ------------ |
+| `backend-api/**`    | `deploy-backend.yml`        | Railway      |
+| `shell-app/**`      | `deploy-vercel-shell.yml`   | Vercel (shell) |
+| `mfe-tasks/**`      | `deploy-vercel-mfe-tasks.yml` | Vercel (mfe-tasks) |
+| `mfe-dashboard/**`  | `deploy-vercel-mfe-dashboard.yml` | Vercel (mfe-dashboard) |
+
+**Setup:**
+
+1. **Vercel** — For each project (shell, mfe-tasks, mfe-dashboard): **Settings → Git → Deploy Hooks** → create a hook for `main`, copy the URL. In the repo: **Settings → Secrets and variables → Actions** → add:
+   - `VERCEL_DEPLOY_HOOK_SHELL`
+   - `VERCEL_DEPLOY_HOOK_MFE_TASKS`
+   - `VERCEL_DEPLOY_HOOK_MFE_DASHBOARD`
+
+   To avoid double deploys, in each Vercel project you can turn off “Deploy on push” and rely only on these hooks, or keep it and use the hooks for path-only triggers (workflows only run when their path changes).
+
+2. **Railway** — In the repo add **Actions** secrets:
+   - `RAILWAY_TOKEN`: Railway project token (**Project → Settings → Tokens**).
+   - `RAILWAY_SERVICE_ID`: (optional) Service ID from the backend service’s URL or settings. If the project has one service, the CLI may detect it without this.
+
+The backend workflow runs in the Railway CLI container and runs `railway up` from `backend-api/`. Ensure the Railway project has **Root Directory** set to `backend-api` (or the service is configured to build from that path).
+
+---
+
 ## Architecture
 
 ```
