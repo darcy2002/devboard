@@ -1,0 +1,15 @@
+# Runs on every push to main/master — use this to confirm Actions and branch are working.
+# If you see this run but deploy-backend doesn't, the push didn't include backend-api/** changes.
+# You can delete this file once everything works.
+
+name: Actions check
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Actions are working on branch ${{ github.ref_name }}"
