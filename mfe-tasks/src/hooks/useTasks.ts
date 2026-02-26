@@ -10,6 +10,15 @@ export const useFetchTasks = (filter: TaskFilter) => {
   });
 };
 
+export const useTask = (id: string | null) => {
+  return useQuery({
+    queryKey: ['task', id],
+    queryFn: () => taskService.fetchTask(id!),
+    enabled: !!id,
+    select: (res) => res.data,
+  });
+};
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -20,43 +29,42 @@ export const useCreateTask = () => {
   });
 };
 
-export const useToggleStatus = () => {
+export const useSetStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => taskService.toggleTaskStatus(id),
-    onMutate: async (id) => {
+    mutationFn: ({ id, status }: { id: string; status: Task['status'] }) =>
+      taskService.setTaskStatus(id, status),
+    onMutate: async ({ id, status }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
-
-      const previousQueries = queryClient.getQueriesData<ApiResponse<Task[]>>({
-        queryKey: ['tasks'],
-      });
-
+      const previousQueries = queryClient.getQueriesData<ApiResponse<Task[]>>({ queryKey: ['tasks'] });
       queryClient.setQueriesData<ApiResponse<Task[]>>(
         { queryKey: ['tasks'] },
         (old) => {
           if (!old) return old;
           return {
             ...old,
-            data: old.data.map((task) =>
-              task._id === id
-                ? { ...task, status: task.status === 'pending' ? 'completed' as const : 'pending' as const }
-                : task
-            ),
+            data: old.data.map((task) => (task._id === id ? { ...task, status } : task)),
           };
         }
       );
-
       return { previousQueries };
     },
-    onError: (_err, _id, context) => {
-      context?.previousQueries.forEach(([key, data]) => {
-        queryClient.setQueryData(key, data);
-      });
+    onError: (_err, _vars, context) => {
+      context?.previousQueries.forEach(([key, data]) => queryClient.setQueryData(key, data));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
+  });
+};
+
+export const useToggleStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, currentStatus }: { id: string; currentStatus: Task['status'] }) =>
+      taskService.setTaskStatus(id, currentStatus === 'completed' ? 'pending' : 'completed'),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 };
 

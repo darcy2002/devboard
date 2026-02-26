@@ -12,6 +12,11 @@ export const fetchTasks = async (status?: string): Promise<ApiResponse<Task[]>> 
   return data;
 };
 
+export const fetchTask = async (id: string): Promise<ApiResponse<Task>> => {
+  const { data } = await api.get<ApiResponse<Task>>(`/tasks/${id}`);
+  return data;
+};
+
 export const createTask = async (payload: CreateTaskPayload): Promise<ApiResponse<Task>> => {
   const { data } = await api.post<ApiResponse<Task>>('/tasks', payload);
   return data;
@@ -22,8 +27,8 @@ export const updateTask = async (id: string, payload: UpdateTaskPayload): Promis
   return data;
 };
 
-export const toggleTaskStatus = async (id: string): Promise<ApiResponse<Task>> => {
-  const { data } = await api.patch<ApiResponse<Task>>(`/tasks/${id}/status`);
+export const setTaskStatus = async (id: string, status: Task['status']): Promise<ApiResponse<Task>> => {
+  const { data } = await api.patch<ApiResponse<Task>>(`/tasks/${id}/status`, { status });
   return data;
 };
 

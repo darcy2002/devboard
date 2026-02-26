@@ -9,7 +9,7 @@ const StatsGrid = ({ stats }: StatsGridProps) => {
   const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
       <StatCard
         icon={
           <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,6 +40,16 @@ const StatsGrid = ({ stats }: StatsGridProps) => {
         title="Pending"
         value={stats.pending}
         colorClass="bg-yellow-100"
+      />
+      <StatCard
+        icon={
+          <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        }
+        title="In Progress"
+        value={stats.inProgress ?? 0}
+        colorClass="bg-indigo-100"
       />
       <StatCard
         icon={

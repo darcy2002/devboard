@@ -3,7 +3,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'in_progress' | 'completed';
   priority: 'low' | 'medium' | 'high';
   dueDate: string;
   isDeleted: boolean;
@@ -24,7 +24,7 @@ export interface UpdateTaskPayload {
   description?: string;
   priority?: 'low' | 'medium' | 'high';
   dueDate?: string;
-  status?: 'pending' | 'completed';
+  status?: 'pending' | 'in_progress' | 'completed';
 }
 
 export interface ApiResponse<T> {
@@ -33,4 +33,10 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export type TaskFilter = 'all' | 'pending' | 'completed';
+export type TaskFilter = 'all' | 'pending' | 'in_progress' | 'completed';
+
+export const KANBAN_COLUMNS: { id: Task['status']; title: string; color: string }[] = [
+  { id: 'pending', title: 'To Do', color: 'amber' },
+  { id: 'in_progress', title: 'In Progress', color: 'blue' },
+  { id: 'completed', title: 'Done', color: 'emerald' },
+];

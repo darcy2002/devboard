@@ -14,8 +14,9 @@ const TaskCard = ({ task }: TaskCardProps) => {
   const toggleStatus = useToggleStatus();
   const deleteTask = useDeleteTask();
 
-  const isOverdue = task.status === 'pending' && new Date(task.dueDate) < new Date();
+  const isOverdue = task.status !== 'completed' && new Date(task.dueDate) < new Date();
   const isCompleted = task.status === 'completed';
+  const statusLabel = task.status === 'completed' ? 'Completed' : task.status === 'in_progress' ? 'In Progress' : 'Pending';
 
   const borderColor = isCompleted
     ? 'border-l-green-500'
@@ -37,9 +38,9 @@ const TaskCard = ({ task }: TaskCardProps) => {
             {task.title}
           </h3>
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-            isCompleted ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+            isCompleted ? 'bg-green-100 text-green-700' : task.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'
           }`}>
-            {isCompleted ? 'Completed' : 'Pending'}
+            {statusLabel}
           </span>
         </div>
 
@@ -57,7 +58,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
 
         <div className="flex gap-2 pt-2 border-t border-gray-100">
           <button
-            onClick={() => toggleStatus.mutate(task._id)}
+            onClick={() => toggleStatus.mutate({ id: task._id, currentStatus: task.status })}
             disabled={toggleStatus.isPending}
             className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50 ${
               isCompleted

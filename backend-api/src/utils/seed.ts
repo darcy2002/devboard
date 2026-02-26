@@ -29,7 +29,7 @@ const seedTasks = [
   {
     title: 'Write API documentation',
     description: 'Document all REST endpoints with request/response examples',
-    status: 'pending',
+    status: 'in_progress',
     priority: 'medium',
     dueDate: new Date('2026-03-15'),
   },
@@ -57,7 +57,7 @@ const seedTasks = [
   {
     title: 'Set up monitoring alerts',
     description: 'Configure alerts for error rates and response times',
-    status: 'pending',
+    status: 'in_progress',
     priority: 'high',
     dueDate: new Date('2026-03-01'),
   },

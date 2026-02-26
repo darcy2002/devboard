@@ -5,15 +5,16 @@ interface TaskChartProps {
   stats: TaskStats;
 }
 
-const COLORS = ['#22c55e', '#eab308'];
+const COLORS = ['#22c55e', '#6366f1', '#eab308'];
 
 const TaskChart = ({ stats }: TaskChartProps) => {
   const data = [
     { name: 'Completed', value: stats.completed },
+    { name: 'In Progress', value: stats.inProgress ?? 0 },
     { name: 'Pending', value: stats.pending },
   ];
 
-  const hasData = stats.completed > 0 || stats.pending > 0;
+  const hasData = data.some((d) => d.value > 0);
 
   if (!hasData) {
     return (

@@ -12,8 +12,9 @@ export const getStats = async (_req: Request, res: Response, next: NextFunction)
           total: [{ $count: 'count' }],
           completed: [{ $match: { status: 'completed' } }, { $count: 'count' }],
           pending: [{ $match: { status: 'pending' } }, { $count: 'count' }],
+          inProgress: [{ $match: { status: 'in_progress' } }, { $count: 'count' }],
           overdue: [
-            { $match: { status: 'pending', dueDate: { $lt: now } } },
+            { $match: { status: { $in: ['pending', 'in_progress'] }, dueDate: { $lt: now } } },
             { $count: 'count' },
           ],
           byPriority: [
@@ -40,9 +41,10 @@ export const getStats = async (_req: Request, res: Response, next: NextFunction)
         total: extract(stats.total),
         completed: extract(stats.completed),
         pending: extract(stats.pending),
+        inProgress: extract(stats.inProgress),
         overdue: extract(stats.overdue),
         byPriority: mapToObj(stats.byPriority, ['low', 'medium', 'high']),
-        byStatus: mapToObj(stats.byStatus, ['pending', 'completed']),
+        byStatus: mapToObj(stats.byStatus, ['pending', 'in_progress', 'completed']),
       },
     });
   } catch (error) {
@@ -55,8 +57,8 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
     const { status, priority } = req.query;
     const filter: Record<string, string> = {};
 
-    if (status && (status === 'pending' || status === 'completed')) {
-      filter.status = status;
+    if (status && ['pending', 'in_progress', 'completed'].includes(status as string)) {
+      filter.status = status as string;
     }
     if (priority && ['low', 'medium', 'high'].includes(priority as string)) {
       filter.priority = priority as string;
@@ -109,16 +111,15 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const toggleTaskStatus = async (req: Request, res: Response, next: NextFunction) => {
+export const setTaskStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { status } = req.body;
     const task = await Task.findById(req.params.id);
     if (!task) {
       throw ApiError.notFound('Task not found');
     }
-
-    task.status = task.status === 'pending' ? 'completed' : 'pending';
+    task.status = status;
     await task.save();
-
     res.json({ success: true, data: task });
   } catch (error) {
     next(error);

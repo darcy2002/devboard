@@ -4,13 +4,14 @@ import {
   getTask,
   createTask,
   updateTask,
-  toggleTaskStatus,
+  setTaskStatus,
   deleteTask,
   getStats,
 } from '../controllers/taskController';
 import {
   validateCreateTask,
   validateUpdateTask,
+  validateSetStatus,
   validateObjectId,
   handleValidationErrors,
 } from '../middleware/validateTask';
@@ -25,7 +26,7 @@ router.post('/', validateCreateTask, handleValidationErrors, createTask);
 
 router.get('/:id', validateObjectId, handleValidationErrors, getTask);
 router.put('/:id', [...validateObjectId, ...validateUpdateTask], handleValidationErrors, updateTask);
-router.patch('/:id/status', validateObjectId, handleValidationErrors, toggleTaskStatus);
+router.patch('/:id/status', [...validateObjectId, ...validateSetStatus], handleValidationErrors, setTaskStatus);
 router.delete('/:id', validateObjectId, handleValidationErrors, deleteTask);
 
 export default router;

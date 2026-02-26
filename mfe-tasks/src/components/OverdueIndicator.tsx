@@ -4,7 +4,7 @@ interface OverdueIndicatorProps {
 }
 
 const OverdueIndicator = ({ status, dueDate }: OverdueIndicatorProps) => {
-  const isOverdue = status === 'pending' && new Date(dueDate) < new Date();
+  const isOverdue = status !== 'completed' && new Date(dueDate) < new Date();
 
   if (!isOverdue) return null;
 

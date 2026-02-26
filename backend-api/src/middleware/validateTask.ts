@@ -41,8 +41,8 @@ export const validateCreateTask: ValidationChain[] = [
     .withMessage('Due date must be a valid date'),
   body('status')
     .optional()
-    .isIn(['pending', 'completed'])
-    .withMessage('Status must be pending or completed'),
+    .isIn(['pending', 'in_progress', 'completed'])
+    .withMessage('Status must be pending, in_progress, or completed'),
 ];
 
 export const validateUpdateTask: ValidationChain[] = [
@@ -65,8 +65,16 @@ export const validateUpdateTask: ValidationChain[] = [
   body('dueDate').optional().isISO8601().withMessage('Due date must be a valid date'),
   body('status')
     .optional()
-    .isIn(['pending', 'completed'])
-    .withMessage('Status must be pending or completed'),
+    .isIn(['pending', 'in_progress', 'completed'])
+    .withMessage('Status must be pending, in_progress, or completed'),
+];
+
+export const validateSetStatus: ValidationChain[] = [
+  body('status')
+    .notEmpty()
+    .withMessage('Status is required')
+    .isIn(['pending', 'in_progress', 'completed'])
+    .withMessage('Status must be pending, in_progress, or completed'),
 ];
 
 export const validateObjectId: ValidationChain[] = [

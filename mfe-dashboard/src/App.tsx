@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useStats } from './hooks/useStats';
 import StatsGrid from './components/StatsGrid';
@@ -6,6 +7,8 @@ import PriorityChart from './components/PriorityChart';
 import RefreshButton from './components/RefreshButton';
 import SkeletonStatCard from './components/SkeletonStatCard';
 import EmptyDashboard from './components/EmptyDashboard';
+import RecentTasksList from './components/RecentTasksList';
+import TaskDetailModal from './components/TaskDetailModal';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -18,6 +21,7 @@ const queryClient = new QueryClient({
 });
 
 const DashboardContent = () => {
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const { stats, isLoading, isError, refetch, isRefetching } = useStats();
 
   if (isLoading) {
@@ -75,11 +79,11 @@ const DashboardContent = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Overview of your tasks</p>
+          <p className="text-sm text-gray-500 mt-1">Overview of your tasks and stats</p>
         </div>
         <RefreshButton onRefresh={() => refetch()} isRefreshing={isRefetching} />
       </div>
@@ -88,10 +92,19 @@ const DashboardContent = () => {
         <StatsGrid stats={stats} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TaskChart stats={stats} />
-        <PriorityChart stats={stats} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <TaskChart stats={stats} />
+          <PriorityChart stats={stats} />
+        </div>
+        <div>
+          <RecentTasksList onSelectTask={(task) => setSelectedTaskId(task._id)} />
+        </div>
       </div>
+
+      {selectedTaskId && (
+        <TaskDetailModal taskId={selectedTaskId} onClose={() => setSelectedTaskId(null)} />
+      )}
     </div>
   );
 };

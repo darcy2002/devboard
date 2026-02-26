@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 export interface ITask extends Document {
   title: string;
   description: string;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'in_progress' | 'completed';
   priority: 'low' | 'medium' | 'high';
   dueDate: Date;
   isDeleted: boolean;
@@ -19,7 +19,8 @@ export interface TaskStats {
   pending: number;
   overdue: number;
   byPriority: { low: number; medium: number; high: number };
-  byStatus: { pending: number; completed: number };
+  byStatus: { pending: number; in_progress: number; completed: number };
+  inProgress: number;
 }
 
 export interface ApiErrorResponse {

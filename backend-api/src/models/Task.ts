@@ -17,7 +17,7 @@ const taskSchema = new Schema<ITask>(
     },
     status: {
       type: String,
-      enum: ['pending', 'completed'],
+      enum: ['pending', 'in_progress', 'completed'],
       default: 'pending',
     },
     priority: {
@@ -46,7 +46,7 @@ const taskSchema = new Schema<ITask>(
 );
 
 taskSchema.virtual('isOverdue').get(function (this: ITask) {
-  return this.status === 'pending' && this.dueDate < new Date();
+  return this.status !== 'completed' && this.dueDate < new Date();
 });
 
 taskSchema.index({ status: 1, isDeleted: 1 });
