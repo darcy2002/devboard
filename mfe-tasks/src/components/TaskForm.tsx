@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Modal from 'sharedUi/Modal';
 import Button from 'sharedUi/Button';
 import { useCreateTask } from '../hooks/useTasks';
+import { Task } from '../types';
 
 interface TaskFormProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ const TaskForm = ({ isOpen, onClose }: TaskFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [status, setStatus] = useState<Task['status']>('pending');
   const [dueDate, setDueDate] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -33,12 +35,13 @@ const TaskForm = ({ isOpen, onClose }: TaskFormProps) => {
     if (!validate()) return;
 
     createTask.mutate(
-      { title: title.trim(), description: description.trim(), priority, dueDate },
+      { title: title.trim(), description: description.trim(), priority, status, dueDate },
       {
         onSuccess: () => {
           setTitle('');
           setDescription('');
           setPriority('medium');
+          setStatus('pending');
           setDueDate('');
           setErrors({});
           onClose();
@@ -51,9 +54,9 @@ const TaskForm = ({ isOpen, onClose }: TaskFormProps) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add New Task" className="max-w-md">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create Task" className="max-w-md">
       {errors.server && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
           {errors.server}
         </div>
       )}
@@ -86,6 +89,19 @@ const TaskForm = ({ isOpen, onClose }: TaskFormProps) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as Task['status'])}
+              className="w-full px-3 py-2.5 border border-gray-200 hover:border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
+            >
+              <option value="pending">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Done</option>
+            </select>
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
             <select
               value={priority}
@@ -97,20 +113,20 @@ const TaskForm = ({ isOpen, onClose }: TaskFormProps) => {
               <option value="high">High</option>
             </select>
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
-            <input
-              type="date"
-              value={dueDate}
-              min={today}
-              onChange={(e) => setDueDate(e.target.value)}
-              className={`w-full px-3 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200 ${
-                errors.dueDate ? 'border-red-300' : 'border-gray-200 hover:border-gray-300'
-              }`}
-            />
-            {errors.dueDate && <p className="mt-1 text-xs text-red-500">{errors.dueDate}</p>}
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
+          <input
+            type="date"
+            value={dueDate}
+            min={today}
+            onChange={(e) => setDueDate(e.target.value)}
+            className={`w-full px-3 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200 ${
+              errors.dueDate ? 'border-red-300' : 'border-gray-200 hover:border-gray-300'
+            }`}
+          />
+          {errors.dueDate && <p className="mt-1 text-xs text-red-500">{errors.dueDate}</p>}
         </div>
 
         <div className="flex justify-end gap-3 pt-2">

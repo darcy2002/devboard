@@ -16,6 +16,7 @@ export interface CreateTaskPayload {
   title: string;
   description?: string;
   priority: 'low' | 'medium' | 'high';
+  status?: 'pending' | 'in_progress' | 'completed';
   dueDate: string;
 }
 
