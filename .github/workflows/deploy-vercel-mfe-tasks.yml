@@ -5,7 +5,7 @@ name: Deploy MFE Tasks (Vercel)
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'mfe-tasks/**'
 

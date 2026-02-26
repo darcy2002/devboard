@@ -52,7 +52,7 @@ Then open the URL Vite prints (e.g. **http://localhost:5173**). The root `npm ru
 
 ## Path-based deploys (GitHub Actions)
 
-Pushes to `main` trigger **only** the deployment for the code that changed:
+Pushes to `main` or `master` trigger **only** the deployment for the code that changed:
 
 | Changes in          | Workflow                    | Deploys to   |
 | ------------------- | --------------------------- | ------------ |

@@ -5,7 +5,7 @@ name: Deploy Shell (Vercel)
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'shell-app/**'
 
