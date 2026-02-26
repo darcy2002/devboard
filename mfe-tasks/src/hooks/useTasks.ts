@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as taskService from '../services/taskService';
-import { Task, CreateTaskPayload, UpdateTaskPayload, TaskFilter } from '../types';
+import { Task, CreateTaskPayload, UpdateTaskPayload, TaskFilter, ApiResponse } from '../types';
 
 export const useFetchTasks = (filter: TaskFilter) => {
   return useQuery({
     queryKey: ['tasks', filter],
     queryFn: () => taskService.fetchTasks(filter === 'all' ? undefined : filter),
     select: (res) => res.data,
+    refetchInterval: 5000,
   });
 };
 
@@ -37,15 +38,22 @@ export const useSetStatus = () => {
       taskService.setTaskStatus(id, status),
     onMutate: async ({ id, status }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
-      // Cache shape is Task[] (from useFetchTasks select), not ApiResponse<Task[]>
-      const previousQueries = queryClient.getQueriesData<Task[]>({ queryKey: ['tasks'] });
-      queryClient.setQueriesData<Task[]>(
+
+      const previousQueries = queryClient.getQueriesData<ApiResponse<Task[]>>({ queryKey: ['tasks'] });
+
+      queryClient.setQueriesData<ApiResponse<Task[]>>(
         { queryKey: ['tasks'] },
         (old) => {
-          if (!Array.isArray(old)) return old;
-          return old.map((task) => (task._id === id ? { ...task, status } : task));
+          if (!old?.data) return old;
+          return {
+            ...old,
+            data: old.data.map((task) =>
+              task._id === id ? { ...task, status } : task
+            ),
+          };
         }
       );
+
       return { previousQueries };
     },
     onError: (_err, _vars, context) => {
@@ -73,16 +81,19 @@ export const useDeleteTask = () => {
     mutationFn: (id: string) => taskService.deleteTask(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
-      // Cache shape is Task[] (from useFetchTasks select), not ApiResponse<Task[]>
-      const previousQueries = queryClient.getQueriesData<Task[]>({
+
+      const previousQueries = queryClient.getQueriesData<ApiResponse<Task[]>>({
         queryKey: ['tasks'],
       });
 
-      queryClient.setQueriesData<Task[]>(
+      queryClient.setQueriesData<ApiResponse<Task[]>>(
         { queryKey: ['tasks'] },
         (old) => {
-          if (!Array.isArray(old)) return old;
-          return old.filter((task) => task._id !== id);
+          if (!old?.data) return old;
+          return {
+            ...old,
+            data: old.data.filter((task) => task._id !== id),
+          };
         }
       );
 

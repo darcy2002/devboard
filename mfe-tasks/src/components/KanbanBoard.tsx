@@ -5,6 +5,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  pointerWithin,
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
@@ -15,6 +16,8 @@ import KanbanColumn from './KanbanColumn';
 import KanbanCard from './KanbanCard';
 import TaskDetailModal from './TaskDetailModal';
 import SkeletonCard from './SkeletonCard';
+
+const VALID_STATUSES = new Set<string>(['pending', 'in_progress', 'completed']);
 
 export default function KanbanBoard() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -44,12 +47,15 @@ export default function KanbanBoard() {
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
     const { active, over } = event;
-    if (!over || over.id === active.id) return;
+    if (!over) return;
+
     const task = active.data.current?.task as Task | undefined;
-    const newStatus = over.id as Task['status'];
-    if (task && (newStatus === 'pending' || newStatus === 'in_progress' || newStatus === 'completed')) {
-      setStatus.mutate({ id: task._id, status: newStatus });
-    }
+    if (!task) return;
+
+    const newStatus = String(over.id);
+    if (!VALID_STATUSES.has(newStatus) || newStatus === task.status) return;
+
+    setStatus.mutate({ id: task._id, status: newStatus as Task['status'] });
   };
 
   if (isLoading) {
@@ -93,7 +99,12 @@ export default function KanbanBoard() {
 
   return (
     <>
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={pointerWithin}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <div className="flex gap-4 overflow-x-auto pb-4 min-h-0 flex-1 pt-2">
           {KANBAN_COLUMNS.map((col) => (
             <KanbanColumn
