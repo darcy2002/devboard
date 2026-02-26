@@ -72,7 +72,7 @@ Pushes to `main` or `master` trigger **only** the deployment for the code that c
 
 2. **Railway** — In the repo add **Actions** secrets:
    - `RAILWAY_TOKEN`: Railway project token (**Project → Settings → Tokens**).
-   - `RAILWAY_SERVICE_ID`: (optional) Service ID from the backend service’s URL or settings. If the project has one service, the CLI may detect it without this.
+   - `RAILWAY_SERVICE_ID`: **Required** when the project has multiple services. Get it in Railway: backend service → Settings → Service ID (or from the service URL). Add as repo secret. Previously: (optional) Service ID from the backend service’s URL or settings. If the project has one service, the CLI may detect it without this.
 
 The backend workflow runs in the Railway CLI container and runs `railway up` from `backend-api/`. Ensure the Railway project has **Root Directory** set to `backend-api` (or the service is configured to build from that path).
 

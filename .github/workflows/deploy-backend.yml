@@ -1,5 +1,5 @@
 # Deploys backend-api to Railway only when backend-api/** changes.
-# Secrets: RAILWAY_TOKEN (Project → Settings → Tokens), RAILWAY_SERVICE_ID (from Railway service settings)
+# Required secrets: RAILWAY_TOKEN, RAILWAY_SERVICE_ID (required when project has multiple services)
 
 name: Deploy Backend (Railway)
 
@@ -21,8 +21,8 @@ jobs:
       - name: Deploy to Railway
         working-directory: backend-api
         run: |
-          if [ -n "$RAILWAY_SERVICE_ID" ]; then
-            railway up --detach --service "$RAILWAY_SERVICE_ID"
-          else
-            railway up --detach
+          if [ -z "$RAILWAY_SERVICE_ID" ]; then
+            echo "::error::RAILWAY_SERVICE_ID secret is not set. Add it in repo Settings → Secrets. Get the ID from Railway: open your backend service → Settings → copy Service ID (or from the service URL)."
+            exit 1
           fi
+          railway up --detach --service "$RAILWAY_SERVICE_ID"
