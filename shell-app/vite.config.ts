@@ -8,6 +8,7 @@ const mfeTasksUrl = (process.env.VITE_MFE_TASKS_URL || 'http://localhost:5001').
 const mfeDashboardUrl = (process.env.VITE_MFE_DASHBOARD_URL || 'http://localhost:5002').replace(/\/+$/, '');
 
 export default defineConfig({
+  base: '/',
   server: {
     port: 5173,
     strictPort: false,
