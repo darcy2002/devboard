@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Button from 'sharedUi/Button';
-import EmptyState from 'sharedUi/EmptyState';
 import { useStats } from './hooks/useStats';
 import StatsGrid from './components/StatsGrid';
 import TaskChart from './components/TaskChart';
@@ -46,18 +44,20 @@ const DashboardContent = () => {
 
   if (isError) {
     return (
-      <div className="p-6 sm:p-8 bg-white h-full">
-        <EmptyState
-          icon={
-            <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          }
-          title="Failed to load stats"
-          action={<Button onClick={() => refetch()}>Retry</Button>}
-        />
+      <div className="p-6 sm:p-8 bg-white h-full flex flex-col items-center justify-center">
+        <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">Failed to load stats</h3>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-4 py-2 text-sm bg-indigo-600 text-white hover:bg-indigo-500 active:scale-[0.97] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Retry
+        </button>
       </div>
     );
   }

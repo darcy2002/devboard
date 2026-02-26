@@ -8,7 +8,6 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
-import Button from 'sharedUi/Button';
 import { useFetchTasks, useSetStatus } from '../hooks/useTasks';
 import { Task } from '../types';
 import { KANBAN_COLUMNS } from '../types';
@@ -81,9 +80,13 @@ export default function KanbanBoard() {
           </svg>
         </div>
         <p className="text-gray-500 mb-4 text-sm">{(error as Error)?.message}</p>
-        <Button variant="primary" onClick={() => refetch()}>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-4 py-2 text-sm bg-indigo-600 text-white hover:bg-indigo-500 active:scale-[0.97] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
           Retry
-        </Button>
+        </button>
       </div>
     );
   }
