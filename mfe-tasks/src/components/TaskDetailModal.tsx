@@ -66,11 +66,11 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
 
   if (isLoading || !task) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-modal-backdrop" onClick={onClose}>
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-auto p-8 animate-modal-panel animate-pulse" onClick={(e) => e.stopPropagation()}>
-          <div className="h-6 bg-gray-200 rounded w-3/4 mb-4" />
-          <div className="h-4 bg-gray-200 rounded w-full mb-2" />
-          <div className="h-4 bg-gray-200 rounded w-1/2" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-modal-backdrop" onClick={onClose}>
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-auto p-8 animate-modal-panel" onClick={(e) => e.stopPropagation()}>
+          <div className="h-6 skeleton-shimmer rounded w-3/4 mb-4" />
+          <div className="h-4 skeleton-shimmer rounded w-full mb-2" />
+          <div className="h-4 skeleton-shimmer rounded w-1/2" />
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-modal-backdrop"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-modal-backdrop"
         onClick={onClose}
       >
         <div
@@ -99,7 +99,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
               <input
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                className="text-xl font-semibold text-gray-900 border border-gray-300 rounded-lg px-3 py-2 w-full"
+                className="text-xl font-semibold text-gray-900 border border-gray-200 hover:border-gray-300 rounded-xl px-3 py-2.5 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
                 autoFocus
               />
             ) : (
@@ -124,7 +124,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
                     value={form.description ?? ''}
                     onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                     rows={3}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="w-full border border-gray-200 hover:border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -133,7 +133,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
                     <select
                       value={form.priority}
                       onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value as Task['priority'] }))}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      className="w-full border border-gray-200 hover:border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -146,7 +146,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
                       type="date"
                       value={form.dueDate ?? ''}
                       onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      className="w-full border border-gray-200 hover:border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function TaskDetailModal({ taskId, onClose, onDeleted }: TaskDeta
                   <select
                     value={form.status}
                     onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as Task['status'] }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="w-full border border-gray-200 hover:border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition-all duration-200"
                   >
                     {KANBAN_COLUMNS.map((c) => (
                       <option key={c.id} value={c.id}>
